@@ -1,20 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { streamText } from 'ai';
+import { openai } from '@ai-sdk/openai';
 
-export async function POST(req: NextRequest) {
-  const { prompt } = await req.json();
+export async function POST(req: Request) {
+  const { messages } = await req.json();
 
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: 'gtp-3.5-turbo',
-      messages: [{ role: 'user', content: prompt }],
-    }),
+  const result = streamText({
+    model: openai('gpt-4'),
+    system: 'You are a helpful assistant',
+    messages,
   });
 
-  const data = await response.json();
-  return NextResponse.json({ result: data.choices[0].messages.content });
+  return result.toDataStreamResponse();
 }
