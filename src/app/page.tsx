@@ -40,10 +40,7 @@ export default function Home() {
                                 )}
                               </strong>
                             </span>
-                            <span
-                              className='text-justify'
-                              key={index}
-                            >
+                            <span className='text-justify'>
                               {(part as TextPart).text}
                             </span>
                           </div>
